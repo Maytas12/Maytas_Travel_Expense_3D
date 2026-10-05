@@ -254,9 +254,13 @@ app.post('/api/careers', upload.single('resume'), (req, res) => {
   });
 });
 // Serve React application
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
+app.use((req, res, next) => {
+  if (req.method === 'GET' && !req.path.startsWith('/api')) {
+    return res.sendFile(path.join(__dirname, 'build', 'index.html'));
+  }
+
+  next();
+});;
 // Start server
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
